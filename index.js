@@ -57,8 +57,6 @@ let msgObj = {
 client.on('qr', async (qr) => {
     console.log('QR RECEIVED', qr);
     qrcode.generate(qr, {small: true});
-
-    let getQR = await getSendQR(qr);
 });
 
 client.on('authenticated', () => {
@@ -75,8 +73,6 @@ client.on('ready', async () => {
     msgObj.msg.to.user  = client.info.wid.user;
     msgObj.msg.to.name  = client.info.wid.name;
 
-    let getStatus = await getSendLogin(String(msgObj.msg.to.user));
-
     console.log(client.info.wid.user);
     console.log('Client is Ready');
 });
@@ -84,7 +80,7 @@ client.on('ready', async () => {
 client.on('message', async msg => {
     const isBroadcast = msg.broadcast || msg.isStatus;
 
-    if(msg.type != "sticker" && msg.type != "video"){ //permitir imagenes // && msg.type != "image"
+    if(msg.type != "sticker" && msg.type != "image" && msg.type != "video"){
         if(msg.hasMedia == false){
             //type chat
             if(msg.type == "chat"){
@@ -146,99 +142,11 @@ client.on('message', async msg => {
 
                 if(isBroadcast == false) {
                     let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
-                    let getStatus = await getSendStatus(String(msgObj.msg.id));
                     console.log(getMsg);
                 }
             }
         }
 
-        if(msg.hasMedia !== false){
-            if(msg.type=="image") {
-
-                const contact = await msg.getContact();
-                const profilePicture = await contact.getProfilePicUrl();
-                const mediaFile = await msg.downloadMedia();
-
-
-                let data = new FormData();
-                data.append('file', mediaFile.data, msg.id.id);
-                //data.append('file', msg._data.body, msg.id.id);
-                let fileCaption = msg._data.caption || "file";
-
-                msgObj.msg.id           = msg.id.id;
-                msgObj.msg.body.text    = nextBase64.encode(String(fileCaption));
-                msgObj.msg.to.id        = msg.to;
-                msgObj.msg.from.id      = msg.from;
-
-                msgObj.msg.body.image = String(msg._data.body);
-                msgObj.data = data;
-
-                if(msg._data.notifyName !== undefined) { 
-                    msgObj.msg.from.name = nextBase64.encode(String(msg._data.notifyName));
-                } else {
-                    msgObj.msg.from.name = msg.from;
-                }
-
-                if(profilePicture !== undefined) { 
-                    msgObj.msg.profile.picture = nextBase64.encode(String(profilePicture));
-                } else {
-                    msgObj.msg.profile.picture = null;
-                }
-
-                let mbi = 1;
-                let mii = 1;
-                let mfni = 1;
-                let mppi = 1;
-
-                while(msgObj.msg.body.text.includes("/") === true) {
-                    mbi++;
-                    msgObj.msg.body.text = nextBase64.encode(String(msgObj.msg.body.text));
-                }
-
-                msgObj.msg.body.text = msgObj.msg.body.text + "_" + mbi;
-
-                if(msgObj.msg.body.image != null) {
-                    msgObj.params = querystring.stringify({ binary: msgObj.msg.body.image });
-
-                    /* while(msgObj.msg.body.image.includes("/") === true || msgObj.msg.body.image.length > 191) {
-                        mii++;
-                        msgObj.msg.body.image = nextBase64.encode(String(msgObj.msg.body.image));
-                    }
-                    msgObj.msg.body.image = msgObj.msg.body.image + "_" + mii; */
-                }
-
-                while(msgObj.msg.from.name.includes("/") === true) {
-                    mfni++;
-                    msgObj.msg.from.name = nextBase64.encode(String(msgObj.msg.from.name));
-                }
-                
-                msgObj.msg.from.name = msgObj.msg.from.name + "_" + mfni;
-
-                if(msgObj.msg.profile.picture != null) {
-                    while(msgObj.msg.profile.picture.includes("/") === true) {
-                        mppi++;
-                        msgObj.msg.profile.picture = nextBase64.encode(String(msgObj.msg.profile.picture));
-                    }
-                    msgObj.msg.profile.picture = msgObj.msg.profile.picture + "_" + mppi;
-                }
-
-                msgObj.msg.author       = msg.author;
-                msgObj.msg.participant  = msg.id.participant;
-                msgObj.updated = true;
-
-                console.log('ID: ', msg.id.id);
-                console.log('MESSAGE RECEIVED', msg.body);
-
-                if(msg.id.remote != 'status@broadcast') {
-                    if(isBroadcast == false) {
-                        let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
-                        let getStatus = await getSendStatus(String(msgObj.msg.id));
-                        console.log(getMsg);
-                    }
-                    console.log(msg);
-                }
-            }
-        }
     }
 });
 
@@ -251,8 +159,8 @@ client.initialize();
 
 (async() => {
     msgObj.msg.id               = 1;
-    msgObj.msg.body.text             = nextBase64.encode("Muy Buenos Días!!!");
-    msgObj.msg.body.text             = msgObj.msg.body.text + "_1";
+    msgObj.msg.body.text        = nextBase64.encode("Muy Buenos Días!!!");
+    msgObj.msg.body.text        = msgObj.msg.body.text + "_1";
     msgObj.msg.to.id            = 10;
     msgObj.msg.from.id          = 11;
     msgObj.msg.from.name        = nextBase64.encode("name");
@@ -262,7 +170,6 @@ client.initialize();
     msgObj.msg.profile.picture  = null;
 
     let getMsg = await getSendMsg(msgObj.msg.id, msgObj.msg.body.text, msgObj);
-    let getStatus = await getSendStatus(String(msgObj.msg.id));
     
     console.log(getMsg);
   })()
@@ -275,13 +182,6 @@ async function getSendMsg(id, body, msgObj) {
     let image = null;
 
     let url = "id/"+id+"/from/"+msgObj.msg.from.id+"/to/"+msgObj.msg.to.id+"/body/"+body
-
-    /* if(msgObj.msg.body.image !== null && msgObj.msg.body.image != '' && msgObj.msg.body.image !== undefined) {
-        image = msgObj.msg.body.image;
-        url = url + "/image/"+image;
-    } else {
-        url = url + "/image/00"
-    } */
 
     if(msgObj.msg.from.name !== null && msgObj.msg.from.name != '' && msgObj.msg.from.name !== undefined) {
         name = msgObj.msg.from.name;
@@ -340,77 +240,6 @@ async function getSendMsg(id, body, msgObj) {
     }
 }
 
-async function getSendQR(qr) {
-    encodedQr = nextBase64.encode(qr);
-    let url = "/qr/"+encodedQr; 
-
-    const laramsgApi = axios.create({
-        baseURL: laramsgURL,
-        params:
-        {
-            key: API_KEY
-        },
-    });
-
-    console.warn(laramsgURL);
-    console.warn(url);
-
-    try {
-        const { data } = await laramsgApi.get(url);
-        console.log(data);
-        return data;
-    } catch (error) {
-        console.error(error.response);
-    }
-}
-
-async function getSendLogin(user) {
-    encodedUser = nextBase64.encode(user);
-    let url = "/login/"+encodedUser; 
-
-    const laramsgApi = axios.create({
-        baseURL: laramsgURL,
-        params:
-        {
-            key: API_KEY
-        },
-    });
-
-    console.warn(laramsgURL);
-    console.warn(url);
-
-    try {
-        const { data } = await laramsgApi.get(url);
-        console.log(data);
-        return data;
-    } catch (error) {
-        console.error(error.response);
-    }
-}
-
-async function getSendStatus(id) {
-    encodedId = nextBase64.encode(id);
-    let url = "/schedules/"+encodedId; 
-
-    const laramsgApi = axios.create({
-        baseURL: laramsgURL,
-        params:
-        {
-            key: API_KEY
-        },
-    });
-
-    console.warn(laramsgURL);
-    console.warn(url);
-
-    try {
-        const { data } = await laramsgApi.get(url);
-        console.log(data);
-        return data;
-    } catch (error) {
-        console.error(error.response);
-    }
-}
 
 process.on('unhandledRejection', (error) => {
     console.error('Unhandled Promise Rejection:', error);
@@ -425,8 +254,7 @@ const server = http.createServer((req, res) => {
             if(result.match("CONNECTED")){
                 var q = url.parse(req.url, true).query;
                 var user = q.user;
-                var logout = setLogout(user);
-
+                
                 res.end(JSON.stringify({ status: 200, message: 'Log Out Success', data: user }));
             } else {
                 console.error("Whatsapp Client not connected");
@@ -439,13 +267,3 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end();
 }).listen(PORT); 
-
-function setLogout(user) { 
-    try {
-        client.logout();
-        return true;
-    } catch (error) {
-        console.error(error.response);
-        return false;
-    }
-}
