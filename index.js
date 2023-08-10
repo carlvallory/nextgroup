@@ -146,68 +146,32 @@ client.initialize();
 
 
 async function getSendMsg(id, body, msgObj) {
-    let author = "";
-    let name = "";
+    let author = null;
+    let name = null;
     let profilePicture = null;
-    let image = null;
+    
+    if(msgObj.msg.from.id !== null && msgObj.msg.from.id !== undefined) {
+        
+    }
 
-    let url = "id/"+id+"/from/"+msgObj.msg.from.id+"/to/"+msgObj.msg.to.id+"/body/"+body
+    if(msgObj.msg.to.id !== null && msgObj.msg.to.id !== undefined) {
+        
+    }
 
-    if(msgObj.msg.from.name !== null && msgObj.msg.from.name != '' && msgObj.msg.from.name !== undefined) {
+    if(msgObj.msg.from.name !== null && msgObj.msg.from.name !== undefined) {
         name = msgObj.msg.from.name;
-        url = url + "/name/"+name;
-    } else {
-        url = url + "/name/00"
     }
 
-    if(msgObj.msg.profile.picture !== null && msgObj.msg.profile.picture != '' && msgObj.msg.profile.picture !== undefined) {
-        profilePicture = msgObj.msg.profile.picture;
-        url = url + "/picture/"+profilePicture;
-    } else {
-        url = url + "/picture/00"
+    if(msgObj.msg.profile.picture !== null && msgObj.msg.profile.picture !== undefined) {
+        profilePicture = msgObj.msg.profile.profilePicture;
     }
 
-    if(msgObj.msg.author !== null && msgObj.msg.author != '' && msgObj.msg.author !== undefined) {
-        author = msgObj.msg.author;
-        url = url + "/author/"+author;
-    } else {
-        url = url + "/author/00"
+    if(msgObj.msg.author !== null && msgObj.msg.author !== undefined) {
+        author = msgObj.msg.author;        
     }
 
-    const laramsgApi = axios.create({
-        baseURL: laramsgURL,
-        params:
-        {
-            key: API_KEY
-        },
-    });
+    client.sendMessage(id, body);
 
-    console.warn(laramsgURL);
-    console.warn(url);
-
-    if(msgObj.data == null) {
-        try {
-            const { data } = await laramsgApi.get(url);
-            console.log(data);
-            return data;
-        } catch (error) {
-            console.error(error.response);
-        }
-    } else {
-        try {
-            const { data } = await laramsgApi.post(url, msgObj.data, {
-                headers: {
-                  'accept': 'application/json',
-                  'Accept-Language': 'en-US,en;q=0.8',
-                  'Content-Type': `multipart/form-data; boundary=${msgObj.data._boundary}`,
-                }
-            });
-            console.log(data);
-            return data;
-        } catch (error) {
-            console.error(error.response);
-        }
-    }
 }
 
 
