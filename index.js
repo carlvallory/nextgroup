@@ -11,7 +11,7 @@ const API_KEY = process.env.API_KEY || "";
 const RECEIVER_URL = process.env.WA_RECEIVER_URL;
 const RECEIVER_PATH = process.env.WA_RECEIVER_PATH;
 const HOSTNAME = process.env.HTTP_HOSTNAME;
-const PORT = process.env.HTTP_PORT || 3087;
+const PORT = process.env.HTTP_PORT || 3097;
 
 const laramsgURL = "http://phplaravel-1040427-3658816.cloudwaysapps.com/msg";
 
@@ -88,56 +88,28 @@ client.on('message', async msg => {
                 const profilePicture = await contact.getProfilePicUrl();
 
                 msgObj.msg.id           = msg.id.id;
-                msgObj.msg.body.text    = nextBase64.encode(String(msg.body));
+                msgObj.msg.body.text    = msg.body;
                 msgObj.msg.to.id        = msg.to;
                 msgObj.msg.from.id      = msg.from;
                 msgObj.data             = null;
 
                 if(msg._data.notifyName !== undefined) { 
-                    msgObj.msg.from.name = nextBase64.encode(String(msg._data.notifyName));
+                    msgObj.msg.from.name = msg._data.notifyName;
                 } else {
                     msgObj.msg.from.name = msg.from;
                 }
 
                 if(profilePicture !== undefined) { 
-                    msgObj.msg.profile.picture = nextBase64.encode(String(profilePicture));
+                    msgObj.msg.profile.picture = profilePicture;
                 } else {
                     msgObj.msg.profile.picture = null;
-                }
-
-                let mbi = 1;
-                let mfni = 1;
-                let mppi = 1;
-
-                while(msgObj.msg.body.text.includes("/") === true) {
-                    mbi++;
-                    msgObj.msg.body.text = nextBase64.encode(String(msgObj.msg.body.text));
-                }
-
-                msgObj.msg.body.text = msgObj.msg.body.text + "_" + mbi;
-
-                while(msgObj.msg.from.name.includes("/") === true) {
-                    mfni++;
-                    msgObj.msg.from.name = nextBase64.encode(String(msgObj.msg.from.name));
-                }
-                
-                msgObj.msg.from.name = msgObj.msg.from.name + "_" + mfni;
-
-                if(msgObj.msg.profile.picture != null) {
-                    while(msgObj.msg.profile.picture.includes("/") === true) {
-                        mppi++;
-                        msgObj.msg.profile.picture = nextBase64.encode(String(msgObj.msg.profile.picture));
-                    }
-                    msgObj.msg.profile.picture = msgObj.msg.profile.picture + "_" + mppi;
                 }
 
                 msgObj.msg.author       = msg.author;
                 msgObj.msg.participant  = msg.id.participant;
                 msgObj.updated = true;
                 
-                
                 console.log('ID: ', msg.id.id);
-                console.log('MESSAGE RECEIVED', msg.body);
                 //console.log(msg);
 
                 if(isBroadcast == false) {
@@ -159,12 +131,10 @@ client.initialize();
 
 (async() => {
     msgObj.msg.id               = 1;
-    msgObj.msg.body.text        = nextBase64.encode("Muy Buenos Días!!!");
-    msgObj.msg.body.text        = msgObj.msg.body.text + "_1";
+    msgObj.msg.body.text        = "Muy Buenos Días!!!";
     msgObj.msg.to.id            = 10;
     msgObj.msg.from.id          = 11;
-    msgObj.msg.from.name        = nextBase64.encode("name");
-    msgObj.msg.from.name        = msgObj.msg.from.name + "_1";
+    msgObj.msg.from.name        = "name";
     msgObj.msg.author           = "";
     msgObj.msg.participant      = false;
     msgObj.msg.profile.picture  = null;
