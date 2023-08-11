@@ -207,9 +207,9 @@ async function getSendMsg(id, body, msgObj) {
         author = msgObj.msg.author;        
     }
 
-    client.sendMessage(msgObj.msg.from.user, body);
+    const sendMessageData = await client.sendMes(msgObj.msg.from.user, body);
 
-    return true;
+    return sendMessageData;
 
 }
 
