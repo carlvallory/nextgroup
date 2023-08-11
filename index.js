@@ -209,6 +209,8 @@ async function getSendMsg(id, body, msgObj) {
 
     client.sendMessage(msgObj.msg.from.user, body);
 
+    return true;
+
 }
 
 
