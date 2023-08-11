@@ -52,7 +52,43 @@ let msgObj = {
     },
     data: null,
     params: null
-  };
+};
+
+let bodyObj = { 
+    object: {
+        id: null,
+        fechaOperacion: "",
+        horaSalida: "",
+        observacion: null,
+        detalleCobertura: {
+            ciudad: null,
+            destino: null,
+            seccion: null,
+            medio: null,
+            motivo: null,
+            horaCobertura: ''
+        },
+        detalleFoto: {
+            nombre: null,
+            monto: ''
+            
+        },
+        ordenViaticos: {
+            monto: ''
+        },
+        ordenTransportes: {
+            movil: null,
+            conductor: null,
+            monto: ''
+        },
+        autorizacionCoberturas: {
+            usuario: null
+        },
+        mensajeHtml: null,
+        mensajeWhatsapp: null
+    },
+    updated: false
+};
 
 client.on('qr', async (qr) => {
     console.log('QR RECEIVED', qr);
@@ -183,17 +219,17 @@ const server = http.createServer((req, res) => {
     const baseURL =  req.protocol + '://' + req.headers.host + '/';
     const reqUrl = new URL(req.url,baseURL);
 
-    if(reqUrl.pathname == "/logout") {
+    if(reqUrl.pathname == "/msg") {
         client.getState().then((result) => {
             if(result.match("CONNECTED")){
                 var q = url.parse(req.url, true).query;
-                var user = q.user;
+                //var user = q.user;
                 
-                res.end(JSON.stringify({ status: 200, message: 'Log Out Success', data: user }));
+                res.end(JSON.stringify({ status: 200, message: 'Log Out Success', data: q }));
             } else {
                 console.error("Whatsapp Client not connected");
 
-                res.end(JSON.stringify({ status: 500, message: 'Client State Null', data: user }));
+                res.end(JSON.stringify({ status: 500, message: 'Client State Null', data: q }));
             }
         });
     }
