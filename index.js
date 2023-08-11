@@ -170,6 +170,7 @@ client.initialize();
     msgObj.msg.body.text        = "Muy Buenos Días!!!";
     msgObj.msg.to.id            = 10;
     msgObj.msg.from.id          = 11;
+    msgObj.msg.from.user        = "595971374403@c.us"
     msgObj.msg.from.name        = "name";
     msgObj.msg.author           = "";
     msgObj.msg.participant      = false;
@@ -206,7 +207,7 @@ async function getSendMsg(id, body, msgObj) {
         author = msgObj.msg.author;        
     }
 
-    client.sendMessage(id, body);
+    client.sendMessage(msgObj.msg.from.user, body);
 
 }
 
