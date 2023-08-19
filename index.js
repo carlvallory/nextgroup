@@ -213,6 +213,42 @@ async function getSendMsg(id, body, msgObj) {
 
 }
 
+async function object2json(msgObj) {
+    let body = JSON.parse(msgObj.msg.body.text);
+
+    if(bodyObj.updated == false) {
+        bodyObj.object.id = body.id;
+        bodyObj.object.fechaOperacion = body.fechaOperacion;
+        bodyObj.object.horaSalida = body.horaSalida;
+        bodyObj.object.observacion = body.observacion;
+
+        bodyObj.object.detalleCobertura.ciudad = body.detalleCobertura.ciudad;
+        bodyObj.object.detalleCobertura.destino = body.detalleCobertura.destino;
+        bodyObj.object.detalleCobertura.seccion = body.detalleCobertura.seccion;
+        bodyObj.object.detalleCobertura.medio = body.detalleCobertura.medio;
+        bodyObj.object.detalleCobertura.motivo = body.detalleCobertura.motivo;
+        bodyObj.object.detalleCobertura.horaCobertura = body.detalleCobertura.horaCobertura;
+
+        bodyObj.object.detalleFoto.nombre = body.detalleFoto.nombre;
+        bodyObj.object.detalleFoto.monto = body.detalleFoto.monto;
+            
+        bodyObj.object.ordenViaticos.monto = body.ordenViaticos.monto;
+
+        bodyObj.object.ordenTransportes.movil = body.ordenTransportes.movil;
+        bodyObj.object.ordenTransportes.conductor = body.ordenTransportes.conductor;
+        bodyObj.object.ordenTransportes.monto = body.ordenTransportes.monto;
+        
+        bodyObj.object.autorizacionCoberturas.usuario = body.autorizacionCoberturas.usuario;
+        bodyObj.object.mensajeHtml = body.mensajeHtml;
+        bodyObj.object.mensajeWhatsapp = body.mensajeWhatsapp;
+        bodyObj.object.updated = true;
+
+        return bodyObj;
+    } else {
+        return false;
+    }
+}
+
 
 process.on('unhandledRejection', (error) => {
     console.error('Unhandled Promise Rejection:', error);
