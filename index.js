@@ -50,14 +50,13 @@ let msgObj = {
         author: null,
         participant: false
     },
-    data: {
-        group: {
-            chat: {
-                id: null,
-                name: null
-            }
+    group: {
+        chat: {
+            id: null,
+            name: null
         }
     },
+    data: null,
     params: null
 };
 
@@ -127,8 +126,8 @@ client.on('ready', async () => {
             }
         });
 
-    msgObj.data.group.chat.id = groups.id;
-    msgObj.data.group.chat.name = groups.name;
+    msgObj.group.chat.id = groups.id;
+    msgObj.group.chat.name = groups.name;
 
     console.log(client.info.wid.user);
     console.log('Client is Ready');
@@ -214,12 +213,12 @@ async function getSendMsg(id, body, msgObj) {
 
         objResponse = object2json(msgObj);
 
-        if(objResponse !== false) {
-            console.log(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
-            const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
+        if(objResponse != false) {
+            console.log(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
         } else {
-            console.log(msgObj.data.group.chat.id, body);
-            const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, body);
+            console.log(msgObj.group.chat.id, body);
+            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         }
 
         return sendMessageData;
