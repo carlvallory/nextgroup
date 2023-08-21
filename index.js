@@ -216,18 +216,19 @@ async function getSendMsg(id, body, msgObj) {
             author = msgObj.msg.author;        
         }
 
-        objResponse = object2json(msgObj);
+        let objResponse = await object2json(msgObj);
+        let sendMessageData = false;
 
         if(objResponse == false) {
             console.log(msgObj.group.chat.id);
             console.log(body);
-            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
+            sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         } else {
             console.log(msgObj.group.chat.id);
             if(objResponse.hasOwnProperty('object')) {
                 if(body.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
-                    const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+                    sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
                 }
             }
         }
