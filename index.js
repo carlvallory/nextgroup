@@ -225,9 +225,9 @@ async function getSendMsg(id, body, msgObj) {
         let sendMessageData = false;
 
         if(objResponse == false) {
-            console.log(msgObj.group.chat.id);
+            console.log(objResponse.group.chat.id);
             console.log(body);
-            sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
+            sendMessageData = await client.sendMessage(objResponse.group.chat.id, body);
         } else {
             console.log(objResponse.group.chat.id);
             if(objResponse.hasOwnProperty('object')) {
