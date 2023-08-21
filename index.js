@@ -165,7 +165,6 @@ client.on('message', async msg => {
                         console.log(getMsg);
                     } catch(e) {
                         console.log("Error Occurred: ", e);
-                        console.log("l: 175");
                     }
                 }
             }
@@ -228,7 +227,33 @@ async function getSendMsg(id, body, msgObj) {
         return sendMessageData;
     } catch(e){
         console.log("Error Occurred: ", e);
-        console.log("l: 232")
+    }
+}
+
+async function getSendMsgByPost(obj) {
+    try { 
+        let objResponse = await object2json(obj);
+        let sendMessageData = false;
+        let chatId = await getChatId("Pruebas");
+
+        if(objResponse == false) {
+            console.log(chatId);
+            console.log(body);
+            sendMessageData = await client.sendMessage(chatId, body);
+        } else {
+            console.log(chatId);
+            if(objResponse.hasOwnProperty('object')) {
+                if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+                    console.log(objResponse.object.mensajeWhatsapp);
+                    sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
+                }
+            }
+        }
+
+        return sendMessageData;
+    } catch(e){
+        console.log("Error Occurred: ", e);
+        console.log("l: 256");
     }
 }
 
@@ -244,9 +269,11 @@ async function getChatId(chatName) {
     return chatId;
 }
 
-async function object2json(msgObj) {
-    if(isJson(msgObj.msg.body.text)) {
-        let body = JSON.parse(msgObj.msg.body.text);
+async function object2json(obj) {
+    if(isJson(obj.msg.body.text)) {
+        let body = JSON.parse(obj.msg.body.text);
+    } else if(isJson(obj)) {
+        let body = JSON.parse(obj);
     } else {
         console.log("Error Occurred: ", "body is not json");
         console.log("l: 239");
@@ -293,7 +320,6 @@ async function object2json(msgObj) {
         bodyObj.object.autorizacionCoberturas.usuario = body.autorizacionCoberturas.usuario;
         bodyObj.object.mensajeHtml = body.mensajeHtml;
         bodyObj.object.mensajeWhatsapp = body.mensajeWhatsapp;
-        bodyObj.group.chat.id = msgObj.group.chat.id;
         bodyObj.updated = true;
 
         return bodyObj;
