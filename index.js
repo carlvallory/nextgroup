@@ -209,18 +209,18 @@ async function getSendMsg(id, body, msgObj) {
 
         let objResponse = await object2json(msgObj);
         let sendMessageData = false;
-        let group = await getChatId("Pruebas");
+        let chatId = await getChatId("Pruebas");
             
         if(objResponse == false) {
-            console.log(group);
+            console.log(chatId);
             console.log(body);
-            sendMessageData = await client.sendMessage(group.id, body);
+            sendMessageData = await client.sendMessage(chatId, body);
         } else {
-            console.log(group);
+            console.log(chatId);
             if(objResponse.hasOwnProperty('object')) {
                 if(body.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
-                    sendMessageData = await client.sendMessage(group.id, objResponse.object.mensajeWhatsapp);
+                    sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
                 }
             }
         }
@@ -235,16 +235,13 @@ async function getSendMsg(id, body, msgObj) {
 async function getChatId(chatName) {
     const groupName = chatName;
     const chats = await client.getChats()
-    const groups = chats
+    const chatId = chats
         .filter(chat => chat.isGroup && chat.name == groupName)
         .map(chat => {
-            return {
-                id: chat.id._serialized, // ***********-**********@g.us
-                name: chat.name // Your Group Name
-            }
+            return chat.id._serialized
         });
 
-    return groups;
+    return chatId;
 }
 
 async function object2json(msgObj) {
