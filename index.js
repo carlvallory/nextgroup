@@ -214,8 +214,13 @@ async function getSendMsg(id, body, msgObj) {
 
         objResponse = object2json(msgObj);
 
-        console.log(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
-        const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
+        if(objResponse !== false) {
+            console.log(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
+            const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
+        } else {
+            console.log(msgObj.data.group.chat.id, body);
+            const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, body);
+        }
 
         return sendMessageData;
     } catch(e){
@@ -225,6 +230,17 @@ async function getSendMsg(id, body, msgObj) {
 
 async function object2json(msgObj) {
     let body = JSON.parse(msgObj.msg.body.text);
+
+    if(body.hasOwnProperty('object')) {
+        if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+            console.log('object2json: evaluating');
+        } else {
+            return false;
+        }
+
+    } else {
+        return false;
+    }
 
     if(bodyObj.updated == false) {
         bodyObj.object.id = body.id;
