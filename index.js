@@ -218,13 +218,14 @@ async function getSendMsg(id, body, msgObj) {
             console.log(body);
             const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         } else {
-            console.log(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+            console.log(msgObj.group.chat.id);
+            console.log(objResponse.object.mensajeWhatsapp);
             const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
         }
 
         return sendMessageData;
     } catch(e){
-        console.log("Error Occurred: ", e)
+        console.log("Error Occurred: ", e, " 227");
     }
 }
 
