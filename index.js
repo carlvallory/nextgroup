@@ -93,6 +93,11 @@ let bodyObj = {
         mensajeHtml: null,
         mensajeWhatsapp: null
     },
+    group: {
+        chat: {
+            id: null
+        }
+    },
     updated: false
 };
 
@@ -224,11 +229,11 @@ async function getSendMsg(id, body, msgObj) {
             console.log(body);
             sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         } else {
-            console.log(msgObj.group.chat.id);
+            console.log(objResponse.group.chat.id);
             if(objResponse.hasOwnProperty('object')) {
                 if(body.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
-                    sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+                    sendMessageData = await client.sendMessage(objResponse.group.chat.id, objResponse.object.mensajeWhatsapp);
                 }
             }
         }
@@ -289,7 +294,8 @@ async function object2json(msgObj) {
         bodyObj.object.autorizacionCoberturas.usuario = body.autorizacionCoberturas.usuario;
         bodyObj.object.mensajeHtml = body.mensajeHtml;
         bodyObj.object.mensajeWhatsapp = body.mensajeWhatsapp;
-        bodyObj.object.updated = true;
+        bodyObj.group.chat.id = msgObj.group.chat.id;
+        bodyObj.updated = true;
 
         return bodyObj;
     } else {
