@@ -356,7 +356,7 @@ const server = http.createServer((req, res) => {
 
     if(reqUrl.pathname == "/msg") {
         let body = [];
-        request.on('data', (chunk) => {
+        req.on('data', (chunk) => {
         body.push(chunk);
         }).on('end', () => {
         body = Buffer.concat(body).toString();
