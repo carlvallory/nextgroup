@@ -355,15 +355,17 @@ const server = http.createServer((req, res) => {
     const reqUrl = new URL(req.url,baseURL);
 
     if(reqUrl.pathname == "/msg") {
-        let body = [];
-        req.on('data', (chunk) => {
-        body.push(chunk);
-        }).on('end', () => {
-        body = Buffer.concat(body).toString();
-        // at this point, `body` has the entire request body stored in it as a string
-        });
+        if (req.method == 'POST') {
+            let body = [];
+            req.on('data', (chunk) => {
+            body.push(chunk);
+            }).on('end', () => {
+            body = Buffer.concat(body).toString();
+            // at this point, `body` has the entire request body stored in it as a string
+            });
 
-        console.log(body);
+            console.log(body);
+        }
 
 
         client.getState().then((result) => {
