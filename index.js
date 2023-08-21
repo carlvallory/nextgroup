@@ -333,7 +333,7 @@ const server = http.createServer((req, res) => {
 
 function isJson(item) {
     if (typeof item !== "string") { return false; }
-    if (!values.some(value => string.includes(["{", "}", "[", "]"]))) { return false; }
+    if (!["{", "}", "[", "]"].some(value => item.includes(value))) { return false; }
     let value = typeof item !== "string" ? JSON.stringify(item) : item;
 
     try {
