@@ -217,7 +217,7 @@ async function getSendMsg(id, body, msgObj) {
         } else {
             console.log(chatId);
             if(objResponse.hasOwnProperty('object')) {
-                if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+                if(objResponse.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
                     sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
                 }
@@ -238,12 +238,12 @@ async function getSendMsgByPost(obj) {
 
         if(objResponse == false) {
             console.log(chatId);
-            console.log(body);
-            sendMessageData = await client.sendMessage(chatId, body);
+            console.log(objResponse.object.mensajeWhatsapp);
+            sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
         } else {
             console.log(chatId);
             if(objResponse.hasOwnProperty('object')) {
-                if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+                if(objResponse.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
                     sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
                 }
