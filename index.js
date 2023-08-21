@@ -338,7 +338,7 @@ async function objectPost2json(obj) {
         return false;
     }
 
-    if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+    if(body.hasOwnProperty('mensajeWhatsapp')) {
         console.log('object2json: evaluating');
     } else {
         console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
