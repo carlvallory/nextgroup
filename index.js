@@ -183,35 +183,38 @@ client.initialize();
 
 
 async function getSendMsg(id, body, msgObj) {
-    let author = null;
-    let name = null;
-    let profilePicture = null;
-    
-    if(msgObj.msg.from.id !== null && msgObj.msg.from.id !== undefined) {
+    try{
+        let author = null;
+        let name = null;
+        let profilePicture = null;
         
+        if(msgObj.msg.from.id !== null && msgObj.msg.from.id !== undefined) {
+            
+        }
+
+        if(msgObj.msg.to.id !== null && msgObj.msg.to.id !== undefined) {
+            
+        }
+
+        if(msgObj.msg.from.name !== null && msgObj.msg.from.name !== undefined) {
+            name = msgObj.msg.from.name;
+        }
+
+        if(msgObj.msg.profile.picture !== null && msgObj.msg.profile.picture !== undefined) {
+            profilePicture = msgObj.msg.profile.profilePicture;
+        }
+
+        if(msgObj.msg.author !== null && msgObj.msg.author !== undefined) {
+            author = msgObj.msg.author;        
+        }
+
+        console.log(msgObj.msg.from.user, body);
+        const sendMessageData = await client.sendMessage(msgObj.msg.from.user, body);
+
+        return sendMessageData;
+    } catch(e){
+        console.log("Error Occurred", e)
     }
-
-    if(msgObj.msg.to.id !== null && msgObj.msg.to.id !== undefined) {
-        
-    }
-
-    if(msgObj.msg.from.name !== null && msgObj.msg.from.name !== undefined) {
-        name = msgObj.msg.from.name;
-    }
-
-    if(msgObj.msg.profile.picture !== null && msgObj.msg.profile.picture !== undefined) {
-        profilePicture = msgObj.msg.profile.profilePicture;
-    }
-
-    if(msgObj.msg.author !== null && msgObj.msg.author !== undefined) {
-        author = msgObj.msg.author;        
-    }
-
-    console.log(msgObj.msg.from.user, body);
-    const sendMessageData = await client.sendMessage(msgObj.msg.from.user, body);
-
-    return sendMessageData;
-
 }
 
 async function object2json(msgObj) {
