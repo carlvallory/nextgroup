@@ -214,7 +214,8 @@ async function getSendMsg(id, body, msgObj) {
         objResponse = object2json(msgObj);
 
         if(objResponse == false) {
-            console.log(msgObj.group.chat.id, body);
+            console.log(msgObj.group.chat.id);
+            console.log(body);
             const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         } else {
             console.log(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
@@ -228,10 +229,10 @@ async function getSendMsg(id, body, msgObj) {
 }
 
 async function object2json(msgObj) {
-    try {
+    if(isJson(msgObj.msg.body.text)) {
         let body = JSON.parse(msgObj.msg.body.text);
-    } catch (e) {
-        console.log("Error Occurred: ", e)
+    } else {
+        console.log("Error Occurred: ", "body is not json")
         return false;
     }
 
@@ -309,3 +310,15 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end();
 }).listen(PORT); 
+
+function isJson(item) {
+    let value = typeof item !== "string" ? JSON.stringify(item) : item;    
+    try {
+        value = JSON.parse(value);
+    } catch (e) {
+        console.log("Error Occurred: ", e)
+        return false;
+    }
+      
+    return typeof value === "object" && value !== null;
+  }
