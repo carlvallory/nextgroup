@@ -206,7 +206,7 @@ async function getSendMsg(id, body, msgObj) {
             author = msgObj.msg.author;        
         }
 
-        let objResponse = await object2json(msgObj);
+        let objResponse = await objectMsg2json(msgObj);
         let sendMessageData = false;
         let chatId = await getChatId("Pruebas");
             
@@ -232,7 +232,7 @@ async function getSendMsg(id, body, msgObj) {
 
 async function getSendMsgByPost(obj) {
     try { 
-        let objResponse = await object2json(obj);
+        let objResponse = await objectPost2json(obj);
         let sendMessageData = false;
         let chatId = await getChatId("Pruebas");
 
@@ -270,14 +270,70 @@ async function getChatId(chatName) {
     return chatId;
 }
 
-async function object2json(obj) {
+async function objectMsg2json(obj) {
     if(isJson(obj.msg.body.text)) {
         let body = JSON.parse(obj.msg.body.text);
-    } else if(isJson(obj)) {
-        let body = JSON.parse(obj);
     } else {
         console.log("Error Occurred: ", "body is not json");
         console.log("l: 239");
+        return false;
+    }
+
+    if(body.hasOwnProperty('object')) {
+        if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+            console.log('object2json: evaluating');
+        } else {
+            console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
+            console.log("l: 248");
+            return false;
+        }
+
+    } else {
+        console.log("Error Occurred: ", "object doesnt exist")
+        console.log("l: 247");
+        return false;
+    }
+
+    if(bodyObj.updated == false) {
+        bodyObj.object.id = body.id;
+        bodyObj.object.fechaOperacion = body.fechaOperacion;
+        bodyObj.object.horaSalida = body.horaSalida;
+        bodyObj.object.observacion = body.observacion;
+
+        bodyObj.object.detalleCobertura.ciudad = body.detalleCobertura.ciudad;
+        bodyObj.object.detalleCobertura.destino = body.detalleCobertura.destino;
+        bodyObj.object.detalleCobertura.seccion = body.detalleCobertura.seccion;
+        bodyObj.object.detalleCobertura.medio = body.detalleCobertura.medio;
+        bodyObj.object.detalleCobertura.motivo = body.detalleCobertura.motivo;
+        bodyObj.object.detalleCobertura.horaCobertura = body.detalleCobertura.horaCobertura;
+
+        bodyObj.object.detalleFoto.nombre = body.detalleFoto.nombre;
+        bodyObj.object.detalleFoto.monto = body.detalleFoto.monto;
+            
+        bodyObj.object.ordenViaticos.monto = body.ordenViaticos.monto;
+
+        bodyObj.object.ordenTransportes.movil = body.ordenTransportes.movil;
+        bodyObj.object.ordenTransportes.conductor = body.ordenTransportes.conductor;
+        bodyObj.object.ordenTransportes.monto = body.ordenTransportes.monto;
+        
+        bodyObj.object.autorizacionCoberturas.usuario = body.autorizacionCoberturas.usuario;
+        bodyObj.object.mensajeHtml = body.mensajeHtml;
+        bodyObj.object.mensajeWhatsapp = body.mensajeWhatsapp;
+        bodyObj.updated = true;
+
+        return bodyObj;
+    } else {
+        console.log("Error Occurred: ", "updated doesnt exist")
+        return false;
+    }
+}
+
+async function objectPost2json(obj) {
+    if(isJson(obj)) {
+        let body = JSON.parse(obj);
+    } else {
+        console.log("Error Occurred: ", "body is not json");
+        console.log("l: 234");
         return false;
     }
 
