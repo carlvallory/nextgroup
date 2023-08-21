@@ -337,6 +337,8 @@ async function objectPost2json(obj) {
         console.log("l: 234");
         return false;
     }
+    
+    console.log(body);
 
     if(body.hasOwnProperty('object')) {
         if(body.object.hasOwnProperty('mensajeWhatsapp')) {
@@ -348,8 +350,7 @@ async function objectPost2json(obj) {
         }
 
     } else {
-        console.log("Error Occurred: ", "object doesnt exist")
-        console.log("l: 247");
+        console.log("Error Occurred: ", "object doesnt exist");
         return false;
     }
 
