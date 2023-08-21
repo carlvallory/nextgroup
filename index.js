@@ -254,6 +254,7 @@ async function getSendMsgByPost(obj) {
     } catch(e){
         console.log("Error Occurred: ", e);
         console.log("l: 256");
+        return false;
     }
 }
 
@@ -357,12 +358,17 @@ const server = http.createServer((req, res) => {
     if(reqUrl.pathname == "/msg") {
         if (req.method == 'POST') {
             let body = [];
-            req.on('data', (chunk) => {
+            req.on('data', async (chunk) => {
                 body.push(chunk);
-            }).on('end', () => {
+            }).on('end', async () => {
                 body = Buffer.concat(body).toString();
                 console.log(body);
                 // at this point, `body` has the entire request body stored in it as a string
+                if(await getSendMsgByPost(body)) {
+                    res.end(JSON.stringify({ status: 200, message: 'Success'}));
+                } else {
+                    res.end(JSON.stringify({ status: 500, message: 'Error'}));
+                }
             });
         }
 
@@ -370,7 +376,6 @@ const server = http.createServer((req, res) => {
         client.getState().then((result) => {
             if(result.match("CONNECTED")){
                 var q = url.parse(req.url, true).query;
-                //var user = q.user;
                 
                 res.end(JSON.stringify({ status: 200, message: 'Log Out Success'}));
             } else {
