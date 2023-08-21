@@ -224,8 +224,12 @@ async function getSendMsg(id, body, msgObj) {
             const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
         } else {
             console.log(msgObj.group.chat.id);
-            console.log(objResponse.object.mensajeWhatsapp);
-            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+            if(objResponse.hasOwnProperty('object')) {
+                if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+                    console.log(objResponse.object.mensajeWhatsapp);
+                    const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+                }
+            }
         }
 
         return sendMessageData;
