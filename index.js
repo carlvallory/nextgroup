@@ -329,8 +329,9 @@ async function objectMsg2json(obj) {
 }
 
 async function objectPost2json(obj) {
+    let body
     if(isJson(obj)) {
-        let body = JSON.parse(obj);
+        body = JSON.parse(obj);
     } else {
         console.log("Error Occurred: ", "body is not json");
         console.log("l: 234");
