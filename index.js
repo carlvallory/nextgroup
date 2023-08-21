@@ -337,20 +337,12 @@ async function objectPost2json(obj) {
         console.log("l: 234");
         return false;
     }
-    
-    console.log(body);
 
-    if(body.hasOwnProperty('object')) {
-        if(body.object.hasOwnProperty('mensajeWhatsapp')) {
-            console.log('object2json: evaluating');
-        } else {
-            console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
-            console.log("l: 248");
-            return false;
-        }
-
+    if(body.object.hasOwnProperty('mensajeWhatsapp')) {
+        console.log('object2json: evaluating');
     } else {
-        console.log("Error Occurred: ", "object doesnt exist");
+        console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
+        console.log("l: 248");
         return false;
     }
 
