@@ -329,6 +329,22 @@ async function object2json(obj) {
     }
 }
 
+function isJson(item) {
+    if (typeof item !== "string") { return false; }
+    if (!["{", "}", "[", "]"].some(value => item.includes(value))) { return false; }
+    let value = typeof item !== "string" ? JSON.stringify(item) : item;
+
+    try {
+        value = JSON.parse(value);
+    } catch (e) {
+        console.log("Error Occurred: ", e);
+        console.log("l: 328")
+        return false;
+    }
+      
+    return typeof value === "object" && value !== null;
+}
+
 
 process.on('unhandledRejection', (error) => {
     console.error('Unhandled Promise Rejection:', error);
@@ -339,6 +355,17 @@ const server = http.createServer((req, res) => {
     const reqUrl = new URL(req.url,baseURL);
 
     if(reqUrl.pathname == "/msg") {
+        let body = [];
+        request.on('data', (chunk) => {
+        body.push(chunk);
+        }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        // at this point, `body` has the entire request body stored in it as a string
+        });
+
+        console.log(body);
+
+
         client.getState().then((result) => {
             if(result.match("CONNECTED")){
                 var q = url.parse(req.url, true).query;
@@ -356,19 +383,3 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end();
 }).listen(PORT); 
-
-function isJson(item) {
-    if (typeof item !== "string") { return false; }
-    if (!["{", "}", "[", "]"].some(value => item.includes(value))) { return false; }
-    let value = typeof item !== "string" ? JSON.stringify(item) : item;
-
-    try {
-        value = JSON.parse(value);
-    } catch (e) {
-        console.log("Error Occurred: ", e);
-        console.log("l: 328")
-        return false;
-    }
-      
-    return typeof value === "object" && value !== null;
-}
