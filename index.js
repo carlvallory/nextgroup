@@ -213,17 +213,17 @@ async function getSendMsg(id, body, msgObj) {
 
         objResponse = object2json(msgObj);
 
-        if(objResponse != false) {
-            console.log(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
-            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
-        } else {
+        if(objResponse == false) {
             console.log(msgObj.group.chat.id, body);
             const sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
+        } else {
+            console.log(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
+            const sendMessageData = await client.sendMessage(msgObj.group.chat.id, objResponse.object.mensajeWhatsapp);
         }
 
         return sendMessageData;
     } catch(e){
-        console.log("Error Occurred", e)
+        console.log("Error Occurred: ", e)
     }
 }
 
@@ -231,6 +231,7 @@ async function object2json(msgObj) {
     try {
         let body = JSON.parse(msgObj.msg.body.text);
     } catch (e) {
+        console.log("Error Occurred: ", e)
         return false;
     }
 
@@ -238,10 +239,12 @@ async function object2json(msgObj) {
         if(body.object.hasOwnProperty('mensajeWhatsapp')) {
             console.log('object2json: evaluating');
         } else {
+            console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist")
             return false;
         }
 
     } else {
+        console.log("Error Occurred: ", "object doesnt exist")
         return false;
     }
 
@@ -274,6 +277,7 @@ async function object2json(msgObj) {
 
         return bodyObj;
     } else {
+        console.log("Error Occurred: ", "updated doesnt exist")
         return false;
     }
 }
@@ -305,12 +309,3 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end();
 }).listen(PORT); 
-
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
