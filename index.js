@@ -228,7 +228,11 @@ async function getSendMsg(id, body, msgObj) {
 }
 
 async function object2json(msgObj) {
-    let body = JSON.parse(msgObj.msg.body.text);
+    try {
+        let body = JSON.parse(msgObj.msg.body.text);
+    } catch (e) {
+        return false;
+    }
 
     if(body.hasOwnProperty('object')) {
         if(body.object.hasOwnProperty('mensajeWhatsapp')) {
@@ -301,3 +305,12 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end();
 }).listen(PORT); 
+
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
