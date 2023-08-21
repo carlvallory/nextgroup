@@ -50,7 +50,14 @@ let msgObj = {
         author: null,
         participant: false
     },
-    data: null,
+    data: {
+        group: {
+            chat: {
+                id: null,
+                name: null
+            }
+        }
+    },
     params: null
 };
 
@@ -109,6 +116,20 @@ client.on('ready', async () => {
     msgObj.msg.to.user  = client.info.wid.user;
     msgObj.msg.to.name  = client.info.wid.name;
 
+    const groupName = 'ASTROPy';
+    const chats = await client.getChats()
+    const groups = chats
+        .filter(chat => chat.isGroup && chat.name == groupName)
+        .map(chat => {
+            return {
+                id: chat.id._serialized, // ***********-**********@g.us
+                name: chat.name // Your Group Name
+            }
+        });
+
+    msgObj.data.group.chat.id = groups.id;
+    msgObj.data.group.chat.name = groups.name;
+
     console.log(client.info.wid.user);
     console.log('Client is Ready');
 });
@@ -165,23 +186,6 @@ client.on('disconnected', (reason) => {
 
 client.initialize();
 
-(async() => {
-    msgObj.msg.id               = 1;
-    msgObj.msg.body.text        = "Muy Buenos Días!!!";
-    msgObj.msg.to.id            = 10;
-    msgObj.msg.from.id          = 11;
-    msgObj.msg.from.user        = "595971374403@c.us";
-    msgObj.msg.from.name        = "name";
-    msgObj.msg.author           = "";
-    msgObj.msg.participant      = false;
-    msgObj.msg.profile.picture  = null;
-
-    let getMsg = await getSendMsg(msgObj.msg.id, msgObj.msg.body.text, msgObj);
-    
-    console.log(getMsg);
-  })()
-
-
 async function getSendMsg(id, body, msgObj) {
     try{
         let author = null;
@@ -208,8 +212,10 @@ async function getSendMsg(id, body, msgObj) {
             author = msgObj.msg.author;        
         }
 
-        console.log(msgObj.msg.from.user, body);
-        const sendMessageData = await client.sendMessage(msgObj.msg.from.user, body);
+        objResponse = object2json(msgObj);
+
+        console.log(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
+        const sendMessageData = await client.sendMessage(msgObj.data.group.chat.id, objResponse.object.mensajeWhatsapp);
 
         return sendMessageData;
     } catch(e){
