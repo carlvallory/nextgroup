@@ -120,20 +120,6 @@ client.on('ready', async () => {
     msgObj.msg.to.user  = client.info.wid.user;
     msgObj.msg.to.name  = client.info.wid.name;
 
-    const groupName = 'Pruebas';
-    const chats = await client.getChats()
-    const groups = chats
-        .filter(chat => chat.isGroup && chat.name == groupName)
-        .map(chat => {
-            return {
-                id: chat.id._serialized, // ***********-**********@g.us
-                name: chat.name // Your Group Name
-            }
-        });
-
-    msgObj.group.chat.id = groups.id;
-    msgObj.group.chat.name = groups.name;
-
     console.log(client.info.wid.user);
     console.log('Client is Ready');
 });
@@ -223,17 +209,18 @@ async function getSendMsg(id, body, msgObj) {
 
         let objResponse = await object2json(msgObj);
         let sendMessageData = false;
-
+        let group = await getChatId("Pruebas");
+            
         if(objResponse == false) {
-            console.log(msgObj.group.chat.id);
+            console.log(group);
             console.log(body);
-            sendMessageData = await client.sendMessage(msgObj.group.chat.id, body);
+            sendMessageData = await client.sendMessage(group.id, body);
         } else {
-            console.log(objResponse.group.chat.id);
+            console.log(group);
             if(objResponse.hasOwnProperty('object')) {
                 if(body.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
-                    sendMessageData = await client.sendMessage(objResponse.group.chat.id, objResponse.object.mensajeWhatsapp);
+                    sendMessageData = await client.sendMessage(group.id, objResponse.object.mensajeWhatsapp);
                 }
             }
         }
@@ -243,6 +230,21 @@ async function getSendMsg(id, body, msgObj) {
         console.log("Error Occurred: ", e);
         console.log("l: 232")
     }
+}
+
+async function getChatId(chatName) {
+    const groupName = chatName;
+    const chats = await client.getChats()
+    const groups = chats
+        .filter(chat => chat.isGroup && chat.name == groupName)
+        .map(chat => {
+            return {
+                id: chat.id._serialized, // ***********-**********@g.us
+                name: chat.name // Your Group Name
+            }
+        });
+
+    return groups;
 }
 
 async function object2json(msgObj) {
