@@ -116,7 +116,7 @@ client.on('ready', async () => {
     msgObj.msg.to.user  = client.info.wid.user;
     msgObj.msg.to.name  = client.info.wid.name;
 
-    const groupName = 'ASTROPy';
+    const groupName = 'Pruebas';
     const chats = await client.getChats()
     const groups = chats
         .filter(chat => chat.isGroup && chat.name == groupName)
