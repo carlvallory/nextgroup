@@ -174,7 +174,7 @@ client.on('message', async msg => {
                         console.log(getMsg);
                     } catch(e) {
                         console.log("Error Occurred: ", e);
-                        console.log("l:");
+                        console.log("l: 175");
                     }
                 }
             }
@@ -231,7 +231,7 @@ async function getSendMsg(id, body, msgObj) {
         return sendMessageData;
     } catch(e){
         console.log("Error Occurred: ", e);
-        console.log("l: 227")
+        console.log("l: 232")
     }
 }
 
@@ -240,7 +240,7 @@ async function object2json(msgObj) {
         let body = JSON.parse(msgObj.msg.body.text);
     } else {
         console.log("Error Occurred: ", "body is not json");
-        console.log("l: 234");
+        console.log("l: 239");
         return false;
     }
 
@@ -249,13 +249,13 @@ async function object2json(msgObj) {
             console.log('object2json: evaluating');
         } else {
             console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
-            console.log("l: 243");
+            console.log("l: 248");
             return false;
         }
 
     } else {
         console.log("Error Occurred: ", "object doesnt exist")
-        console.log("l: 242");
+        console.log("l: 247");
         return false;
     }
 
@@ -322,14 +322,16 @@ const server = http.createServer((req, res) => {
 }).listen(PORT); 
 
 function isJson(item) {
-    let value = typeof item !== "string" ? JSON.stringify(item) : item;    
+    if (typeof item !== "string") { return false; }
+    let value = typeof item !== "string" ? JSON.stringify(item) : item;
+
     try {
         value = JSON.parse(value);
     } catch (e) {
         console.log("Error Occurred: ", e);
-        console.log("l: 323")
+        console.log("l: 328")
         return false;
     }
       
     return typeof value === "object" && value !== null;
-  }
+}
