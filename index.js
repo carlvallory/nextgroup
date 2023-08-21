@@ -169,8 +169,13 @@ client.on('message', async msg => {
                 //console.log(msg);
 
                 if(isBroadcast == false) {
-                    let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
-                    console.log(getMsg);
+                    try{
+                        let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
+                        console.log(getMsg);
+                    } catch(e) {
+                        console.log("Error Occurred: ", e);
+                        console.log("l:");
+                    }
                 }
             }
         }
@@ -225,7 +230,8 @@ async function getSendMsg(id, body, msgObj) {
 
         return sendMessageData;
     } catch(e){
-        console.log("Error Occurred: ", e, " 227");
+        console.log("Error Occurred: ", e);
+        console.log("l: 227")
     }
 }
 
@@ -233,7 +239,8 @@ async function object2json(msgObj) {
     if(isJson(msgObj.msg.body.text)) {
         let body = JSON.parse(msgObj.msg.body.text);
     } else {
-        console.log("Error Occurred: ", "body is not json")
+        console.log("Error Occurred: ", "body is not json");
+        console.log("l: 234");
         return false;
     }
 
@@ -241,12 +248,14 @@ async function object2json(msgObj) {
         if(body.object.hasOwnProperty('mensajeWhatsapp')) {
             console.log('object2json: evaluating');
         } else {
-            console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist")
+            console.log("Error Occurred: ", "mensajeWhatsapp doesnt exist");
+            console.log("l: 243");
             return false;
         }
 
     } else {
         console.log("Error Occurred: ", "object doesnt exist")
+        console.log("l: 242");
         return false;
     }
 
@@ -317,7 +326,8 @@ function isJson(item) {
     try {
         value = JSON.parse(value);
     } catch (e) {
-        console.log("Error Occurred: ", e)
+        console.log("Error Occurred: ", e);
+        console.log("l: 323")
         return false;
     }
       
