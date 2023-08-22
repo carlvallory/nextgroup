@@ -246,6 +246,9 @@ async function getSendMsgByPost(obj) {
                 if(objResponse.object.hasOwnProperty('mensajeWhatsapp')) {
                     console.log(objResponse.object.mensajeWhatsapp);
                     sendMessageData = await client.sendMessage(chatId, objResponse.object.mensajeWhatsapp);
+                    if(!sendMessageData != true) {
+                        bodyObj.updated = false;
+                    }
                 }
             }
         }
