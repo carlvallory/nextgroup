@@ -161,8 +161,9 @@ client.on('message', async msg => {
 
                 if(isBroadcast == false) {
                     try{
-                        let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
-                        console.log(getMsg);
+                        // let getMsg = await getSendMsg(msg.id.id, msgObj.msg.body.text, msgObj);
+                        // console.log(getMsg);
+                        console.log("No Reply");
                     } catch(e) {
                         console.log("Error Occurred: ", e);
                     }
